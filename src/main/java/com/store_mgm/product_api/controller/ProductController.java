@@ -1,3 +1,4 @@
+// src/main/java/com/store_mgm/product_api/controller/ProductController.java
 package com.store_mgm.product_api.controller;
 
 import com.store_mgm.product_api.model.Product;
@@ -5,6 +6,7 @@ import com.store_mgm.product_api.repository.ProductRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +41,7 @@ public class ProductController {
                 .map(product -> ResponseEntity.ok(product))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
-
+    
     @GetMapping("/product/name/{name}")
     public ResponseEntity<Product> getProductByName(@PathVariable String name) {
         return productRepository.findByNameIgnoreCase(name)
@@ -103,14 +104,18 @@ public class ProductController {
     @GetMapping("/products/sort/{type}")
     public List<Product> getProductsSorted(@PathVariable String type) {
         switch (type.toLowerCase()) {
-            case "asc":
+            case "name-asc":
+                return productRepository.findProductsSortedByNameAsc();
+            case "name-desc":
+                return productRepository.findProductsSortedByNameDesc();
+            case "price-asc":
                 return productRepository.findProductsSortedByPriceAsc();
-            case "desc":
+            case "price-desc":
                 return productRepository.findProductsSortedByPriceDesc();
             case "category":
                 return productRepository.findProductsGroupedByCategory();
             default:
-                throw new IllegalArgumentException("Invalid sort type. Use 'asc', 'desc', or 'category'.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort type. Use 'name-asc', 'name-desc', 'price-asc', 'price-desc', or 'category'.");
         }
     }
 

@@ -1,3 +1,4 @@
+// src/main/java/com/store_mgm/product_api/repository/ProductRepository.java
 package com.store_mgm.product_api.repository;
 
 import com.store_mgm.product_api.model.Product;
@@ -31,6 +32,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p GROUP BY p.category")
     List<Product> findProductsGroupedByCategory();
+
+    @Query("SELECT p FROM Product p ORDER BY p.name ASC")
+    List<Product> findProductsSortedByNameAsc();
+    
+    @Query("SELECT p FROM Product p ORDER BY p.name DESC")
+    List<Product> findProductsSortedByNameDesc();
 
     @Query("SELECT p FROM Product p ORDER BY p.price ASC")
     List<Product> findProductsSortedByPriceAsc();

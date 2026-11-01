@@ -1,3 +1,4 @@
+// src/main/java/com/store_mgm/product_api/model/Product.java
 package com.store_mgm.product_api.model;
 
 import jakarta.persistence.Entity;
